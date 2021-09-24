@@ -1,1 +1,57 @@
 // app global css in SCSS form
+.page {
+    background: black;
+}
+.title-1 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #f7971e;
+}
+.product-card-1 {
+    border-radius: 7px;
+}
+.product-name-1 {
+    color: #fff;
+    padding-top: 7px;
+    line-height: 15px;
+}
+.product-price-1 {
+    font-size: 16px;
+    color: rgb(40, 97, 219);
+    font-weight: bold;
+    line-height: 10px;
+}
+.sale-quantity-1 {
+    font-size: 12px;
+    color: #979797;
+    line-height: 10px;
+}
+.button-1 {
+    background-color: #424242;
+    color: #fff;
+    width: 10vw;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 10px 20px 10px 20px;
+}
+.button-1:hover {
+    color: #000;
+    background-color: #f7971e;
+}
+.shot-btn-1 {
+    background-color: #424242;
+    color: #fff;
+    width: 7vw;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 5px 15px 5px 15px;
+}
+
+.dialog-header {
+    background-color: #f7971e;
+}
+.dialog-title {
+    color: #fff;
+    font-size: 24px;
+    font-weight: bold;
+}

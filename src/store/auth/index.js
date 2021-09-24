@@ -1,4 +1,6 @@
 import firebase from "firebase";
+import 'firebase/storage';
+import { v4 as uuidv4 } from 'uuid';
 
 const config = {
   apiKey: "AIzaSyDEHEAVuLRBQ2v06F3EVozR8SvqllLvUTk",
@@ -10,8 +12,12 @@ const config = {
 };
 firebase.initializeApp(config);
 
+const db = firebase.firestore();
+const storage = firebase.storage();
+
 const state = {
-  user: ""
+  user: "",
+  popularShops: []
 };
 
 const getters = {};
@@ -24,7 +30,18 @@ const actions = {
       .auth()
       .createUserWithEmailAndPassword(payload.email, payload.password)
       .then(userCredential => {
-        console.log(userCredential);
+        console.log(userCredential.user.uid);
+        if (!!userCredential.user.uid) {
+          db.collection("users").doc(userCredential.user.uid).set({
+            id: userCredential.user.uid,
+            email: payload.email,
+            address: "",
+            createdAt: Date.now(),
+            updatedAt: Date.now(),
+            type: 0,
+            isActive: true
+          })
+        }
         response = true;
       })
       .catch(error => {
@@ -57,15 +74,97 @@ const actions = {
   logout: async ({ commit }, payload) => {
     localStorage.removeItem("email");
     localStorage.removeItem("uid");
+  },
+  addProduct: async ({ commit }, payload) => {
+    console.log(payload);
+    const docId = await db.collection("products").add({
+      id: uuidv4(),
+      uid: localStorage.getItem("uid"),
+      name: payload.name,
+      description: payload.description,
+      price: payload.price,
+      stock: payload.stock,
+      sold: 0,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    })
+      .then((docRef) => {
+        console.log(docRef.id);
+        return docRef.id;
+      })
+      .catch((error) => {
+        console.error("Error adding document: ", error);
+      });
+    const index = await payload.images.map(image => {
+      const ref = storage.ref().child(uuidv4() + "_" + localStorage.getItem("uid"));
+      ref.put(image).then((snapshot) => {
+        snapshot.ref.getDownloadURL().then(res => {
+          db.collection("products").doc(docId).update({
+            images: firebase.firestore.FieldValue.arrayUnion(res)
+          })
+        })
+      });
+    })
+  },
+  getShopPopulars: async ({ commit }) => {
+    let shops = []
+    let products = []
+    let popularShop = []
+    await db.collection("shops").where("rating", ">", 4)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          shops.push(doc.data())
+        });
+      })
+      .catch((error) => {
+        console.log("Error getting documents: ", error);
+      });
+    await shops.forEach((shop) => {
+      db.collection("products").where("uid", "==", shop.uid)
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            if (products.length < 4) {
+              products.push(doc.data())
+            }
+          });
+        })
+        .catch((error) => {
+          console.log("Error getting documents: ", error);
+        });
+      popularShop.push({
+        shops: shop,
+        products: products
+      })
+    })
+    commit("SET_POPULAR", popularShop);
+  },
+  getProductsByShopId: async ({ }, payload) => {
+    await db.collection("products").where("uid", "==", payload)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          console.log(doc.id, " => ", doc.data());
+        });
+      })
+      .catch((error) => {
+        console.log("Error getting documents: ", error);
+      });
   }
 };
 
 const mutations = {
-  SET_USER(state, user) {
-    console.log(user);
+  SET_USER: async (state, user) => {
     localStorage.setItem("email", user.email);
     localStorage.setItem("uid", user.uid);
     state.user = user;
+  },
+  SET_POPULAR: async (state, popularShops) => {
+    // data.forEach((shop) => {
+    //   state.popularShops.push(shop)
+    // })
+    state.popularShops = [...popularShops]
   }
 };
 

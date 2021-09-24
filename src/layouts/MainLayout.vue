@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="hHh lpR fFf">
+  <q-layout view="hHh LpR fFf">
     <q-header bordered class="page text-white header-border">
       <q-toolbar>
         <!-- <q-btn dense flat round icon="menu" @click="left = !left" /> -->
@@ -24,6 +24,7 @@
 
         <div v-if="!$q.platform.is.mobile">
           <q-btn v-if="isLogined">{{ loginEmail }}</q-btn>
+          <q-btn v-if="isLogined" @click="navigateMerchant()">Merchant</q-btn>
           <q-btn v-if="isLogined" @click="logout()">Logout</q-btn>
           <q-btn v-if="!isLogined" @click="loginModal = true">Login</q-btn>
           <q-btn v-if="!isLogined" @click="registerModal = true"
@@ -128,7 +129,7 @@ export default {
       left: false,
       registerModal: false,
       loginModal: false,
-      rightMenu: false
+      rightMenu: false,
     };
   },
   computed: {
@@ -145,7 +146,7 @@ export default {
       } else {
         return localStorage.getItem("email");
       }
-    }
+    },
   },
   methods: {
     logout() {
@@ -154,13 +155,16 @@ export default {
     },
     backHome() {
       window.location.replace("/");
-    }
+    },
+    navigateMerchant() {
+      window.location.replace("/merchant");
+    },
   },
   mounted() {
     let email = localStorage.getItem("email");
     let uid = localStorage.getItem("uid");
-    console.log("USER >> " + email + " : " + uid);
-  }
+    // console.log("USER >> " + email + " : " + uid);
+  },
 };
 </script>
 
@@ -170,7 +174,7 @@ export default {
 }
 
 .header-border {
-  border-bottom: 3px solid white;
+  border-bottom: 3px solid #424242;
 }
 .logo-mobile {
   width: 50vw;
@@ -181,7 +185,6 @@ export default {
   width: 250px;
   cursor: pointer;
 }
-
 .drawer {
   background-color: black;
 }

@@ -1,6 +1,6 @@
 <template>
   <div class="q-mb-lg banner-card row">
-    <div class="carousel-card">
+    <div class="col-9 carousel-card">
       <q-carousel
         v-model="slide"
         transition-prev="slide-right"
@@ -31,9 +31,12 @@
       </q-carousel>
     </div>
     <!-- <q-separator class="q-ml-md" vertical size="3px" color="orange-4" inset /> -->
-    <div class="q-pa-lg">
-      <p class="shop-name">{{ data.shops.name }}</p>
-      <p class="description">{{ data.shops.description }}</p>
+    <div class="col-3 column justify-between q-pa-lg shop-detail">
+      <div>
+        <p class="shop-name">{{ data.shops.name }}</p>
+        <p class="description">{{ data.shops.description }}</p>
+      </div>
+      <q-btn class="btn q-mb-md">Visit Shop</q-btn>
     </div>
   </div>
 </template>
@@ -57,12 +60,12 @@ export default {
   border-bottom: 3px solid #424242;
 }
 .carousel {
-  min-height: 240px;
+  min-height: 300px;
   height: 36vh;
   width: 60vw;
 }
 .carousel-card {
-  width: 60vw;
+  // width: 60vw;
   padding-top: 20px;
   padding-left: 0px;
 }
@@ -71,10 +74,16 @@ export default {
   font-weight: bold;
   color: #f7971e;
 }
+.btn {
+  background-color: #f7971e;
+}
 .description {
-  font-size: 1.2rem;
+  font-size: 1.3em;
   font-weight: 400;
-  line-height: 16px;
+  line-height: 25px;
   color: white;
+}
+.shop-detail {
+  z-index: 10;
 }
 </style>

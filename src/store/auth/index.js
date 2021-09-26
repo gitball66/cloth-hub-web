@@ -85,6 +85,7 @@ const actions = {
       price: payload.price,
       stock: payload.stock,
       sold: 0,
+      showBanner: true,
       createdAt: Date.now(),
       updatedAt: Date.now(),
     })
@@ -125,7 +126,7 @@ const actions = {
         .get()
         .then((querySnapshot) => {
           querySnapshot.forEach((doc) => {
-            if (products.length < 4) {
+            if (products.length < 4 && doc.data().showBanner) {
               products.push(doc.data())
             }
           });

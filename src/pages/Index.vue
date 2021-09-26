@@ -45,6 +45,6 @@ p {
   color: white;
 }
 .banner {
-  padding-left: -5px;
+  padding-right: 40px;
 }
 </style>

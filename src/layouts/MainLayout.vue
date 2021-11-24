@@ -23,7 +23,9 @@
         </q-avatar>
 
         <div v-if="!$q.platform.is.mobile">
-          <q-btn v-if="isLogined">{{ loginEmail }}</q-btn>
+          <q-btn v-if="isLogined" @click="navigateUserPage()">{{
+            loginEmail
+          }}</q-btn>
           <q-btn v-if="isLogined" @click="navigateMerchant()">Merchant</q-btn>
           <q-btn v-if="isLogined" @click="logout()">Logout</q-btn>
           <q-btn v-if="!isLogined" @click="loginModal = true">Login</q-btn>
@@ -58,6 +60,8 @@
         <p class="main-btn">Swimwear</p>
       </div>
     </q-drawer>
+
+    <!-- MOBILE -->
 
     <q-drawer
       v-else
@@ -114,6 +118,10 @@
       @closeModal="loginModal = false"
       :openModal="loginModal"
     ></LoginModal>
+    <UserSettingModal
+      @closeModal="userSettingModal = false"
+      :openModal="userSettingModal"
+    ></UserSettingModal>
   </q-layout>
 </template>
 
@@ -121,14 +129,16 @@
 import { Platform } from "quasar";
 import RegisterModal from "../components/RegisterModal";
 import LoginModal from "../components/LoginModal";
+import UserSettingModal from "../components/UserSettingModal";
 export default {
   name: "MainLayout",
-  components: { Platform, RegisterModal, LoginModal },
+  components: { Platform, RegisterModal, LoginModal, UserSettingModal },
   data() {
     return {
       left: false,
       registerModal: false,
       loginModal: false,
+      userSettingModal: false,
       rightMenu: false,
     };
   },
@@ -158,6 +168,9 @@ export default {
     },
     navigateMerchant() {
       window.location.replace("/merchant");
+    },
+    navigateUserPage() {
+      window.location.replace("/userprofile");
     },
   },
   mounted() {

@@ -9,7 +9,12 @@ const routes = [
         path: '/merchant', component: () => import('pages/Merchant.vue'), meta: {
           requiresAuth: true
         }
-      }
+      },
+      {
+        path: '/userprofile', component: () => import('pages/UserPage.vue'), meta: {
+          requiresAuth: true
+        }
+      },
     ]
   },
 

@@ -57,6 +57,7 @@ const actions = {
       .auth()
       .signInWithEmailAndPassword(payload.email, payload.password)
       .then(res => {
+        console.log("res", res);
         let user = {
           uid: res.user.uid,
           email: res.user.email

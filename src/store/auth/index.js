@@ -35,10 +35,14 @@ const actions = {
           db.collection("users").doc(userCredential.user.uid).set({
             id: userCredential.user.uid,
             email: payload.email,
-            address: "",
             createdAt: Date.now(),
             updatedAt: Date.now(),
+            firstname: "",
+            lastname: "",
+            address1: "",
+            address2: "",
             type: 0,
+            isMerchant: false,
             isActive: true
           })
         }
@@ -57,7 +61,6 @@ const actions = {
       .auth()
       .signInWithEmailAndPassword(payload.email, payload.password)
       .then(res => {
-        console.log("res", res);
         let user = {
           uid: res.user.uid,
           email: res.user.email
@@ -76,8 +79,36 @@ const actions = {
     localStorage.removeItem("email");
     localStorage.removeItem("uid");
   },
+  getUserData: async ({ commit }, payload) => {
+    console.log("payload", payload)
+    await db.collection("users").where("id", "==", payload)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          console.log(doc.id, " => ", doc.data());
+          let data = doc.data();
+          let user = {
+            uid: data.id,
+            email: data.email,
+            createdAt: data.createdAt,
+            updatedAt: data.updatedAt,
+            firstname: data.firstname,
+            lastname: data.lastname,
+            address1: data.address1,
+            address2: data.address2,
+            type: data.type,
+            isMerchant: data.isMerchant,
+            isActive: data.isActive
+          };
+          commit("SET_USER", user);
+        });
+      })
+      .catch((error) => {
+        console.log("Error getting documents: ", error);
+      });
+  },
   addProduct: async ({ commit }, payload) => {
-    console.log(payload);
+    // console.log(payload);
     const docId = await db.collection("products").add({
       id: uuidv4(),
       uid: localStorage.getItem("uid"),

@@ -88,7 +88,10 @@ export default {
   data() {
     return {
       email: "",
-      fullname: "",
+      firstname: "",
+      lastname: "",
+      address1: "",
+      address2: "",
       password: "",
       registerCode: "",
       isLoading: false,

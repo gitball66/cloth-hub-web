@@ -17,7 +17,9 @@ const storage = firebase.storage();
 
 const state = {
   user: "",
-  popularShops: []
+  popularShops: [],
+  shop: null,
+  shopProducts: []
 };
 
 const getters = {};
@@ -39,8 +41,7 @@ const actions = {
             updatedAt: Date.now(),
             firstname: "",
             lastname: "",
-            address1: "",
-            address2: "",
+            address: "",
             type: 0,
             isMerchant: false,
             isActive: true
@@ -94,11 +95,11 @@ const actions = {
             updatedAt: data.updatedAt,
             firstname: data.firstname,
             lastname: data.lastname,
-            address1: data.address1,
-            address2: data.address2,
+            address: data.address,
             type: data.type,
             isMerchant: data.isMerchant,
-            isActive: data.isActive
+            isActive: data.isActive,
+            sid: data.sid
           };
           commit("SET_USER", user);
         });
@@ -107,11 +108,12 @@ const actions = {
         console.log("Error getting documents: ", error);
       });
   },
-  addProduct: async ({ commit }, payload) => {
-    // console.log(payload);
+  addProduct: async ({ state, commit }, payload) => {
+    console.log(state.shop);
     const docId = await db.collection("products").add({
       id: uuidv4(),
       uid: localStorage.getItem("uid"),
+      sid: state.shop.id,
       name: payload.name,
       description: payload.description,
       price: payload.price,
@@ -140,51 +142,60 @@ const actions = {
     })
   },
   getShopPopulars: async ({ commit }) => {
+    commit("CLEAR_POPULAR_SHOP");
     let shops = []
-    let products = []
-    let popularShop = []
     await db.collection("shops").where("rating", ">", 4)
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          shops.push(doc.data())
+          let products = [];
+          let shopData = doc.data();
+          db.collection("products").where("sid", "==", shopData.id)
+            .get()
+            .then((querySnapshot) => {
+              querySnapshot.forEach((doc) => {
+                if (products.length < 4 && doc.data().showBanner) {
+                  products.push(doc.data());
+                }
+              });
+              let shop = {
+                shop: shopData,
+                products: products
+              }
+              commit("SET_POPULAR_SHOP", shop);
+            });
         });
-      })
-      .catch((error) => {
-        console.log("Error getting documents: ", error);
       });
-    await shops.forEach((shop) => {
-      db.collection("products").where("uid", "==", shop.uid)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            if (products.length < 4 && doc.data().showBanner) {
-              products.push(doc.data())
-            }
-          });
-        })
-        .catch((error) => {
-          console.log("Error getting documents: ", error);
-        });
-      popularShop.push({
-        shops: shop,
-        products: products
-      })
-    })
-    commit("SET_POPULAR", popularShop);
   },
-  getProductsByShopId: async ({ }, payload) => {
-    await db.collection("products").where("uid", "==", payload)
+  getShopDataBySid: async ({ commit }, sid) => {
+    console.log("add");
+    await db.collection("shops").where("id", "==", sid)
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
           console.log(doc.id, " => ", doc.data());
+          commit("SET_SHOP", doc.data());
         });
       })
       .catch((error) => {
         console.log("Error getting documents: ", error);
       });
-  }
+  },
+  getProductsByShopId: async ({ commit }, sid) => {
+    let products = []
+    await db.collection("products").where("sid", "==", sid)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          console.log(doc.id, " => ", doc.data());
+          products.push(doc.data());
+        });
+        commit("SET_SHOP_PRODUCT", products);
+      })
+      .catch((error) => {
+        console.log("Error getting documents: ", error);
+      });
+  },
 };
 
 const mutations = {
@@ -193,12 +204,19 @@ const mutations = {
     localStorage.setItem("uid", user.uid);
     state.user = user;
   },
-  SET_POPULAR: async (state, popularShops) => {
-    // data.forEach((shop) => {
-    //   state.popularShops.push(shop)
-    // })
-    state.popularShops = [...popularShops]
-  }
+  CLEAR_POPULAR_SHOP: async (state) => {
+    state.popularShops.splice(0, state.popularShops.length)
+  },
+  SET_POPULAR_SHOP: async (state, popularShops) => {
+    state.popularShops.push(popularShops);
+  },
+  SET_SHOP: async (state, shop) => {
+    state.shop = shop
+  },
+  SET_SHOP_PRODUCT: async (state, products) => {
+    state.shopProducts = products;
+  },
+
 };
 
 export default {

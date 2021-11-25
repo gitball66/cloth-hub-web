@@ -27,8 +27,8 @@
         <q-input
           color="orange-4"
           standout
-          v-model="address1"
-          label="Address 1"
+          v-model="address"
+          label="Address"
           error-message=""
           :error="false"
         >
@@ -36,15 +36,12 @@
         <q-input
           color="orange-4"
           standout
-          v-model="address2"
-          label="Address 2"
+          v-model="email"
+          label="Email"
           error-message=""
           :error="false"
         >
         </q-input>
-        <div class="row justify-center">
-          <q-btn color="orange-4" standout label="Activate Merchant"></q-btn>
-        </div>
         <!-- <q-input
           color="orange-4"
           standout
@@ -90,8 +87,7 @@ export default {
       email: "",
       firstname: "",
       lastname: "",
-      address1: "",
-      address2: "",
+      address: "",
       password: "",
       registerCode: "",
       isLoading: false,

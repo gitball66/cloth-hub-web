@@ -15,6 +15,11 @@ const routes = [
           requiresAuth: true
         }
       },
+      {
+        path: '/shop', component: () => import('pages/ShopsPage.vue'), meta: {
+          requiresAuth: true
+        }
+      },
     ]
   },
 

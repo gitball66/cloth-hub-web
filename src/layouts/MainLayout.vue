@@ -26,7 +26,9 @@
           <q-btn v-if="isLogined" @click="navigateUserPage()">{{
             loginEmail
           }}</q-btn>
-          <q-btn v-if="isLogined" @click="navigateMerchant()">Merchant</q-btn>
+          <q-btn v-if="isLogined && user.isMerchant" @click="navigateMerchant()"
+            >Merchant</q-btn
+          >
           <q-btn v-if="isLogined" @click="logout()">Logout</q-btn>
           <q-btn v-if="!isLogined" @click="loginModal = true">Login</q-btn>
           <q-btn v-if="!isLogined" @click="registerModal = true"
@@ -118,10 +120,6 @@
       @closeModal="loginModal = false"
       :openModal="loginModal"
     ></LoginModal>
-    <UserSettingModal
-      @closeModal="userSettingModal = false"
-      :openModal="userSettingModal"
-    ></UserSettingModal>
   </q-layout>
 </template>
 
@@ -130,6 +128,7 @@ import { Platform } from "quasar";
 import RegisterModal from "../components/RegisterModal";
 import LoginModal from "../components/LoginModal";
 import UserSettingModal from "../components/UserSettingModal";
+import { mapState } from "vuex";
 export default {
   name: "MainLayout",
   components: { Platform, RegisterModal, LoginModal, UserSettingModal },
@@ -143,6 +142,9 @@ export default {
     };
   },
   computed: {
+    ...mapState({
+      user: (state) => state.auth.user,
+    }),
     isLogined() {
       if (localStorage.getItem("email") === null) {
         return false;
@@ -173,9 +175,10 @@ export default {
       window.location.replace("/userprofile");
     },
   },
-  mounted() {
+  async mounted() {
     let email = localStorage.getItem("email");
     let uid = localStorage.getItem("uid");
+    await this.$store.dispatch("getUserData", localStorage.getItem("uid"));
     // console.log("USER >> " + email + " : " + uid);
   },
 };

@@ -1,16 +1,12 @@
 <template>
   <q-page class="page column q-pt-md items-center">
-    <div class="banner" v-for="item in popularShops" :key="item.shop">
-      <ShopBanner :data="item"></ShopBanner>
+    <div v-if="!loading">
+      <div class="banner" v-for="item in popularShops" :key="item.shop.id">
+        <ShopBanner :data="item"></ShopBanner>
+      </div>
     </div>
-    <div>
-      <q-spinner
-        class="q-mt-lg"
-        v-if="loading"
-        color="orange"
-        size="4em"
-        :thickness="8"
-      />
+    <div v-else>
+      <q-spinner class="q-mt-lg" color="orange" size="4em" :thickness="8" />
     </div>
   </q-page>
 </template>
@@ -34,7 +30,7 @@ export default {
   async beforeMount() {
     this.loading = true;
     await this.$store.dispatch("getShopPopulars");
-    console.log(this.popularShops);
+    console.log("this.popularShops", this.popularShops);
     this.loading = false;
   },
 };

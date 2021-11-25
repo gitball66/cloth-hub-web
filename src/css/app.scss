@@ -1,4 +1,6 @@
 // app global css in SCSS form
+@import url("https://fonts.googleapis.com/css2?family=Prompt:wght@500&display=swap");
+
 .page {
     background: black;
 }
@@ -11,15 +13,17 @@
     border-radius: 7px;
 }
 .product-name-1 {
+    font-family: "Prompt", sans-serif;
     color: #fff;
-    padding-top: 7px;
-    line-height: 15px;
+    padding-top: 15px;
+    line-height: 10px;
 }
 .product-price-1 {
-    font-size: 16px;
+    font-size: 18px;
     color: rgb(40, 97, 219);
     font-weight: bold;
     line-height: 10px;
+    letter-spacing: 1px;
 }
 .sale-quantity-1 {
     font-size: 12px;

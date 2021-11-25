@@ -1,42 +1,22 @@
 <template>
   <div class="q-mb-lg banner-card row">
-    <div class="col-9 carousel-card">
-      <q-carousel
-        v-model="slide"
-        transition-prev="slide-right"
-        transition-next="slide-left"
-        animated
-        control-color="orange-4"
-        padding
-        arrows
-        class="bg-black carousel"
-      >
-        <q-carousel-slide
-          :name="1"
-          style="padding-left: 30px"
-          class="column no-wrap"
-        >
-          <div
-            v-if="data.products.length > 0"
-            class="row justify-start items-center q-gutter-md no-wrap"
-          >
-            <div v-for="item in data.products" :key="item.id">
-              <ProductCard :data="item"></ProductCard>
-            </div>
-          </div>
-          <div v-else class="row justify-center q-mt-lg">
-            <h5 class="text-white">Products Not Available</h5>
-          </div>
-        </q-carousel-slide>
-      </q-carousel>
+    <div
+      v-if="data"
+      class="col-9 row justify-start items-center q-gutter-md no-wrap"
+    >
+      <div v-for="item in data.products" :key="item.id">
+        <ProductCard :data="item"></ProductCard>
+      </div>
     </div>
     <!-- <q-separator class="q-ml-md" vertical size="3px" color="orange-4" inset /> -->
     <div class="col-3 column justify-between q-pa-lg shop-detail">
       <div>
-        <p class="shop-name">{{ data.shops.name }}</p>
-        <p class="description">{{ data.shops.description }}</p>
+        <p class="shop-name">{{ data ? data.shop.name : "" }}</p>
+        <p class="description">{{ data ? data.shop.description : "" }}</p>
       </div>
-      <q-btn class="btn q-mb-md">Visit Shop</q-btn>
+      <q-btn @click="navigateShop(data.shop.id)" class="btn q-mb-md"
+        >Visit Shop</q-btn
+      >
     </div>
   </div>
 </template>
@@ -51,10 +31,24 @@ export default {
       slide: 1,
     };
   },
+  methods: {
+    navigateShop(sid) {
+      this.$router.push(`/shop?sid=${sid}`);
+    },
+    async getProductsInBanner(sid) {
+      return this.$store.dispatch("getPopularShopProducts", sid);
+    },
+  },
+  mounted() {
+    console.log("banner", this.data);
+  },
 };
 </script>
 
 <style lang="scss" scoped>
+p {
+  color: white;
+}
 .banner-card {
   background-color: #000;
   border-bottom: 3px solid #424242;
@@ -85,5 +79,11 @@ export default {
 }
 .shop-detail {
   z-index: 10;
+}
+.img {
+  width: 13vw;
+  //   max-width: 20px;
+  min-width: 100px;
+  border-radius: 5px 5px 0px 0px;
 }
 </style>

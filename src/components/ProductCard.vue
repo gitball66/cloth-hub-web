@@ -13,14 +13,23 @@
   </div>
 </template>
 <script>
+import { mapState } from "vuex";
 export default {
   props: ["data"],
+  computed: {
+    ...mapState({
+      popularShops: (state) => state.auth.popularShops,
+    }),
+  },
+  mounted() {
+    // console.log("dataaaa", this.data);
+  },
 };
 </script>
 <style lang="scss" scoped>
 .img {
   width: 13vw;
-//   max-width: 20px;
+  //   max-width: 20px;
   min-width: 100px;
   border-radius: 5px 5px 0px 0px;
 }

@@ -6,7 +6,7 @@
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
 
-module.exports = function(/* ctx */) {
+module.exports = function (/* ctx */) {
   return {
     // https://quasar.dev/quasar-cli/supporting-ts
     supportTS: false,
@@ -57,7 +57,7 @@ module.exports = function(/* ctx */) {
       // extractCSS: false,
 
       // https://quasar.dev/quasar-cli/handling-webpack
-      extendWebpack(cfg) {}
+      extendWebpack(cfg) { }
     },
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
@@ -103,8 +103,8 @@ module.exports = function(/* ctx */) {
       workboxPluginMode: "GenerateSW", // 'GenerateSW' or 'InjectManifest'
       workboxOptions: {}, // only for GenerateSW
       manifest: {
-        name: `Quasar App`,
-        short_name: `Quasar App`,
+        name: `Cloth Hub`,
+        short_name: `Cloth Hub`,
         description: `A Quasar Framework app`,
         display: "standalone",
         orientation: "portrait",

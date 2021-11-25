@@ -2,7 +2,7 @@
   "name": "cloth-hub",
   "version": "0.0.1",
   "description": "A Quasar Framework app",
-  "productName": "Quasar App",
+  "productName": "Cloth Hub",
   "author": "Suttipong Pramuansin <s.pramuansin@gmail.com>",
   "private": true,
   "scripts": {

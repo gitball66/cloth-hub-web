@@ -33,15 +33,15 @@
           :error="false"
         >
         </q-input>
-        <q-input
+        <!-- <q-input
           color="orange-4"
           standout
           v-model="email"
           label="Email"
-          error-message=""
-          :error="false"
+          error-message="The email is invalid."
+          :error="isEmail"
         >
-        </q-input>
+        </q-input> -->
         <!-- <q-input
           color="orange-4"
           standout
@@ -79,9 +79,10 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
   name: "UserSettingModal",
-  props: ["openModal"],
+  props: ["openModal", "data"],
   data() {
     return {
       email: "",
@@ -95,6 +96,9 @@ export default {
     };
   },
   computed: {
+    ...mapState({
+      user: (state) => state.auth.user,
+    }),
     isValid() {
       if (this.password === "") {
         return false;
@@ -115,31 +119,15 @@ export default {
     closeModal() {
       this.$emit("closeModal");
     },
-    async login() {
-      this.isLoading = true;
-      try {
-        if (this.password != "" && this.email != "") {
-          let res = await this.$store.dispatch("login", {
-            email: this.email,
-            password: this.password,
-          });
-          console.log("res ", res);
-          if (!res) {
-            this.alert = true;
-            this.registerCode = "Login Failed";
-          }
-        } else {
-          this.alert = true;
-          this.registerCode = "Please fill out all information.";
-        }
-      } catch {
-        this.alert = true;
-        this.registerCode = "Login Failed";
-      }
-      this.password = "";
-      this.email = "";
-      this.isLoading = false;
-    },
+  },
+  async mounted() {
+    this.loading = true;
+    await this.$store.dispatch("getUserData", localStorage.getItem("uid"));
+    this.firstname = this.user.firstname;
+    this.lastname = this.user.lastname;
+    this.email = this.user.email;
+    this.address = this.user.address;
+    this.loading = false;
   },
 };
 </script>
